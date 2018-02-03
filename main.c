@@ -1,5 +1,5 @@
-#include<stdio.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "stack.h"
 #include "instruction.h"
 
@@ -12,7 +12,7 @@
 int readInstructions()
 {
     FILE* fp;
-    fp = fopen("compiled_code.txt");
+    fp = fopen("compiled_code.txt", "r");
     if(!fp)
     {
         return FILE_DOESENT_EXIST;
@@ -30,12 +30,13 @@ int readInstructions()
             case ',' :
                 reading_op = !reading_op;
                 break;
-            
+
             case ';' :
                 reading_op = !reading_op;
+                printf("Adding instruction: op=%d, data=%d\n", op_code, data);
                 addInstruction(op_code, data);
                 break;
-            
+
             case '#' :
                 reached_end = 1;
                 break;
@@ -43,15 +44,17 @@ int readInstructions()
             default:
                 if(reading_op)
                 {
-                    op_code = c;
+                    op_code = atoi((const char*) &c);
                 }
                 else
                 {
-                    data = c;
+                    data = atoi((const char*) &c);
                 }
                 break;
         }
     }
+
+    return FILE_READ_OK;
 }
 
 
@@ -80,6 +83,7 @@ void runCode()
 
             default:
                 printf("Unknown instruction\n");
+                return;
                 break;
         }
     }
@@ -99,5 +103,3 @@ int main(int argc, char *argv[])
 
     runCode();
 }
-
-

@@ -6,8 +6,8 @@
 #define POP 2
 #define ADD 3
 #define BEQ 4
-#define BRA 5
-#define PRI 6
+#define BRA 5 // Ascii of 5
+#define PRI 6 // Ascii of 6
 #define DUP 7
 
 #define unknown_address 128

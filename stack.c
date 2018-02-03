@@ -1,7 +1,7 @@
 #include "stack.h"
 
 
-int initStack()
+void initStack()
 {
     Stack.top = 0;
 }
