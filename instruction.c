@@ -9,7 +9,7 @@ void initMemory()
 }
 
 
-int addInstruction(int operation, int data)
+int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number)
 {
     if(Memory.number_of_instructions >= MAX_NUM_INSTRUCTIONS)
     {
@@ -21,6 +21,8 @@ int addInstruction(int operation, int data)
         struct InstructionType* instr_p = &Memory.memory[Memory.number_of_instructions];
         instr_p->operation = operation;
         instr_p->data = data;
+        instr_p->destination_reg_number = destination_reg_number;
+        instr_p->source_reg_number = source_reg_number;
 
         Memory.number_of_instructions++;
         return INSTRUCTION_ADDED;
@@ -37,7 +39,6 @@ struct InstructionType getInstruction(int address)
     {
         struct InstructionType unknown_instr;
         unknown_instr.operation = unknown_address;
-        unknown_instr.data = unknown_address;
         return unknown_instr;
     }
 }

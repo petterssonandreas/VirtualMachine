@@ -7,8 +7,11 @@
 #define ADD 3
 #define BEQ 4
 #define BRA 5
-#define PRI 6
+#define PRINT_IM 6
 #define DUP 7
+#define LOAD_IM 8
+#define MOVE_REGS 9
+#define PRINT_REG 10
 
 #define unknown_address 128
 
@@ -21,6 +24,8 @@ struct InstructionType
 {
     int operation;
     int data;
+    int destination_reg_number;
+    int source_reg_number;
 };
 
 struct MemoryType
@@ -32,7 +37,7 @@ struct MemoryType
 
 void initMemory();
 
-int addInstruction(int operation, int data);
+int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number);
 struct InstructionType getInstruction(int address);
 
 #endif

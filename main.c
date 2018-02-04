@@ -21,18 +21,22 @@ int readInstructions()
 
     int op_code;
     int data;
+    int dest_reg_num;
+    int source_reg_num;
 
     while(!feof(fp))
     {
-        fscanf(fp, "%d,%d", &op_code, &data);
+        fscanf(fp, "%d,%d,%d,%d", &op_code, &data, &dest_reg_num, &source_reg_num);
         printf("Adding instruction: op=%d, data=%d\n", op_code, data);
-        addInstruction(op_code, data);
+        addInstruction(op_code, data, dest_reg_num, source_reg_num);
 
         if(getc(fp) != ';')
         {
             break;
         }
     }
+
+    fclose(fp);
 
     return FILE_READ_OK;
 }
@@ -42,6 +46,7 @@ int readInstructions()
 void runCode()
 {
     int pc = 0;
+    int temp;
 
     struct InstructionType instr;
 
@@ -66,7 +71,15 @@ void runCode()
                 break;
 
             case ADD:
-                //TODO
+                // dest = dest + source
+                printf("Running code ADD R%d,R%d\n", instr.destination_reg_number, instr.source_reg_number);
+                int sum = 0;
+                readRegister(instr.destination_reg_number, &temp);
+                sum += temp;
+                readRegister(instr.source_reg_number, &temp);
+                sum += temp;
+                writeRegister(instr.destination_reg_number, sum);
+                pc++;
                 break;
 
             case BEQ:
@@ -78,19 +91,40 @@ void runCode()
                 pc = instr.data;
                 break;
 
-            case PRI:
+            case PRINT_IM:
                 printf("Running code PRI,%d\n", instr.data);
                 printf("%d\n", instr.data);
                 pc++;
                 break;
 
             case DUP:
-                printf("Running code BRA,%d\n", instr.data);
-                pc = instr.data;
+                //TODO
+                break;
+            
+            case LOAD_IM:
+                // Load a value (immediate) in a register
+                printf("Running code LOAD_IM,%d, to R%d\n", instr.data, instr.destination_reg_number);
+                writeRegister(instr.destination_reg_number, instr.data);
+                pc++;
+                break;
+
+            case MOVE_REGS:
+                // Copy the value in one reg to another
+                printf("Running code MOVE_REGS, dest: %d, source: %d\n", instr.destination_reg_number, instr.source_reg_number);
+                readRegister(instr.source_reg_number, &temp);
+                writeRegister(instr.destination_reg_number, temp);
+                break;
+
+            case PRINT_REG:
+                // Print the value stored in the source register
+                printf("Running code PRINT_REG,%d\n", instr.source_reg_number);
+                readRegister(instr.source_reg_number, &temp);
+                printf("R%d: %d\n", instr.source_reg_number, temp);
+                pc++;
                 break;
 
             default:
-                printf("Unknown instruction\n");
+                printf("Unknown instruction: %d,%d,%d,%d\n", instr.operation, instr.data, instr.destination_reg_number, instr.source_reg_number);
                 return;
                 break;
         }
