@@ -12,6 +12,12 @@
 #define LOAD_IM 8
 #define MOVE_REGS 9
 #define PRINT_REG 10
+#define SUB 11
+#define BNE 12
+#define BGE 13 // branch on greater or equal 0
+#define BLE 14 // branch on less or equal 0
+#define BRG 15 // branch on greater than 0
+#define BRL 16 // branch on less than 0
 
 #define unknown_address 128
 

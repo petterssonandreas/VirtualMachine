@@ -41,6 +41,19 @@ int readInstructions()
     return FILE_READ_OK;
 }
 
+int subTwoRegs(int destination_reg_number, int source_reg_number)
+{
+    int temp;
+    int diff = 0;
+    readRegister(destination_reg_number, &temp);
+    diff += temp;
+    readRegister(source_reg_number, &temp);
+    diff -= temp;
+
+    return diff;
+}
+
+
 
 
 void runCode()
@@ -82,8 +95,90 @@ void runCode()
                 pc++;
                 break;
 
+            case SUB:
+                // dest = dest - source
+                printf("Running code SUB R%d,R%d\n", instr.destination_reg_number, instr.source_reg_number);
+                int diff = subTwoRegs(instr.destination_reg_number, instr.source_reg_number);
+                writeRegister(instr.destination_reg_number, diff);
+                pc++;
+                break;
+
             case BEQ:
-                //TODO
+                // Branch if two regs are the same, i.e. SUB produces 0
+                printf("Running code BEQ %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) == 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
+                break;
+
+            case BNE:
+                // Branch if two regs are NOT the same
+                printf("Running code BNE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) != 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
+                break;
+
+            case BGE:
+                // branch on greater or equal 0
+                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) >= 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
+                break;
+
+            case BLE:
+                // branch on less or equal 0
+                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) <= 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
+                break;
+
+            case BRG:
+                // branch on greater than 0
+                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) > 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
+                break;
+
+            case BRL:
+                // branch on greater than 0
+                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) < 0)
+                {
+                    pc = instr.data;
+                }
+                else
+                {
+                    pc++;
+                }
                 break;
 
             case BRA:
