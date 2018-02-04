@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "stack.h"
 #include "instruction.h"
+#include "register.h"
 
 #define FILE_DOESENT_EXIST 1
 #define FILE_READ_OK 2
@@ -18,39 +19,18 @@ int readInstructions()
         return FILE_DOESENT_EXIST;
     }
 
-    int c;
     int op_code;
     int data;
-    int reading_op = 1;
-    int reached_end = 0;
-    while(((c = getc(fp)) != EOF) && !reached_end)
+
+    while(!feof(fp))
     {
-        switch(c)
+        fscanf(fp, "%d,%d", &op_code, &data);
+        printf("Adding instruction: op=%d, data=%d\n", op_code, data);
+        addInstruction(op_code, data);
+
+        if(getc(fp) != ';')
         {
-            case ',' :
-                reading_op = !reading_op;
-                break;
-
-            case ';' :
-                reading_op = !reading_op;
-                printf("Adding instruction: op=%d, data=%d\n", op_code, data);
-                addInstruction(op_code, data);
-                break;
-
-            case '#' :
-                reached_end = 1;
-                break;
-
-            default:
-                if(reading_op)
-                {
-                    op_code = atoi((const char*) &c);
-                }
-                else
-                {
-                    data = atoi((const char*) &c);
-                }
-                break;
+            break;
         }
     }
 
@@ -70,13 +50,41 @@ void runCode()
         instr = getInstruction(pc);
         switch(instr.operation)
         {
+            case NOP:
+                printf("Running code NOP\n");
+                pc++;
+                break;
+
+            case PUS:
+                printf("Running code PUS,%d\n", instr.data);
+                push(instr.data);
+                pc++;
+                break;
+
+            case POP:
+                //TODO
+                break;
+
+            case ADD:
+                //TODO
+                break;
+
+            case BEQ:
+                //TODO
+                break;
+
+            case BRA:
+                printf("Running code BRA,%d\n", instr.data);
+                pc = instr.data;
+                break;
+
             case PRI:
                 printf("Running code PRI,%d\n", instr.data);
                 printf("%d\n", instr.data);
                 pc++;
                 break;
 
-            case BRA:
+            case DUP:
                 printf("Running code BRA,%d\n", instr.data);
                 pc = instr.data;
                 break;
@@ -95,6 +103,7 @@ int main(int argc, char *argv[])
 {
     initMemory();
     initStack();
+    initRegs();
 
     if(readInstructions() != FILE_READ_OK)
     {

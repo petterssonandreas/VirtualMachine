@@ -1,5 +1,7 @@
 #include "stack.h"
 
+static struct StackType Stack;
+
 
 void initStack()
 {

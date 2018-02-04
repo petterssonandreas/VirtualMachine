@@ -17,7 +17,6 @@ struct StackType
     int top;
 };
 
-struct StackType Stack;
 
 void initStack();
 

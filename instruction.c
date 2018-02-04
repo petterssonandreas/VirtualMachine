@@ -1,5 +1,8 @@
 #include "instruction.h"
 
+static struct MemoryType Memory;
+
+
 void initMemory()
 {
     Memory.number_of_instructions = 0;
@@ -38,4 +41,3 @@ struct InstructionType getInstruction(int address)
         return unknown_instr;
     }
 }
-
