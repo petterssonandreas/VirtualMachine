@@ -8,14 +8,48 @@ struct OperationStringCodeType OperationStringCodes[NUM_DIFFERENT_OPERATIONS];
 void compileCode(char* source_file);
 void initOperationStringCodes();
 unsigned int getOperationCode(char* op_str);
+void clearLine(FILE* file);
+void writeCode(char* filename);
 
 
 int main(int argc, char *argv[])
 {
     printf("Source file: %s\n", argv[1]);
     initOperationStringCodes();
-    compileCode(argv[1]);
+    initMemory();
+    if(argc >= 2)
+    {
+        compileCode(argv[1]);
+        writeCode("a.out");
+    }
 }
+
+
+
+void writeCode(char* filename)
+{
+    printf("Starting write\n");
+
+    FILE* file;
+    file = fopen(filename, "w");
+    if(!file)
+    {
+        return;
+    }
+
+    printf("Created file ok\n");
+
+    int i;
+    for(i = 0; i < getNumberOfInstructions(); ++i)
+    {
+        struct InstructionType instruction = getInstruction(i);
+        fprintf(file, "%d,%d,%d,%d;", instruction.operation, instruction.data, 
+                instruction.destination_reg_number, instruction.source_reg_number);
+    }
+
+    fclose(file);
+}
+
 
 
 
@@ -31,11 +65,17 @@ void compileCode(char* source_file)
     char operation[MAX_INSTRUCTION_LENGTH];
     unsigned int op_code = 0;
     int data = 0;
-    int destination_register_number = 0;
-    int source_register_number = 0;
+    int destination_reg_number = 0;
+    int source_reg_number = 0;
+
+    char reg_names[MAX_REG_NAME_LENGTH];
 
     while(!feof(file))
     {
+        data = 0;
+        destination_reg_number = 0;
+        source_reg_number = 0;
+
         fscanf(file, "%s", &operation);
         printf("Compiling: %s\n", operation);
 
@@ -46,93 +86,126 @@ void compileCode(char* source_file)
         switch(op_code)
         {
             case NOP:
-
+                clearLine(file);
                 break;
             
             case PUS:
-
+                // TODO
                 break;
 
             case POP:
-
+                // TODO
                 break;
 
             case ADD:
-
+                fscanf(file, "%s", &reg_names);
+                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                clearLine(file);
                 break;
 
             case SUB:
-
+                fscanf(file, "%s", &reg_names);
+                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                clearLine(file);
                 break;
 
             case BRA:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BEQ:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BNE:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BGE:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BLE:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BRG:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case BRL:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case DUP:
-
+                // TODO
                 break;
 
             case PRINT_IM:
-                // read chars until newline
-                int c;
-                do
-                {
-                    c = getc(file);
-                } while(c != '\n');
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case PRINT_REG:
-
+                fscanf(file, "%s", &reg_names);
+                sscanf(reg_names, "R%d", &source_reg_number);
+                printf("Compiling: %s R%d\n", operation, source_reg_number);
+                clearLine(file);
                 break;
 
             case LOAD_IM:
-
+                fscanf(file, "%d", &data);
+                printf("Compiling: %s %d\n", operation, data);
+                clearLine(file);
                 break;
 
             case MOVE_REGS:
-
+                fscanf(file, "%s", &reg_names);
+                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                clearLine(file);
                 break;
 
             default:
+                printf("Unknown instruction, setting to NOP\n");
+                op_code = NOP;
+                clearLine(file);
                 break;
             
         }
 
-        //printf("|%c|\n", getc(file));
-
-
-        /*if(getc(file) != ';')
-        {
-            break;
-        }*/
+        // Gotten all data, add instruction
+        addInstruction(op_code, data, destination_reg_number, source_reg_number);
     }
 
     fclose(file);
+}
+
+void clearLine(FILE* file)
+{
+    // Read chars until newline or EOF
+    int c;
+    do
+    {
+        c = getc(file);
+    } while(c != '\n' && c != EOF);
 }
 
 

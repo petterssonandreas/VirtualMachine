@@ -13,7 +13,7 @@
 int readInstructions()
 {
     FILE* fp;
-    fp = fopen("compiled_code.txt", "r");
+    fp = fopen("a.out", "r");
     if(!fp)
     {
         return FILE_DOESENT_EXIST;

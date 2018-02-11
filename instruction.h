@@ -45,5 +45,6 @@ void initMemory();
 
 int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number);
 struct InstructionType getInstruction(int address);
+int getNumberOfInstructions();
 
 #endif

@@ -42,3 +42,9 @@ struct InstructionType getInstruction(int address)
         return unknown_instr;
     }
 }
+
+
+int getNumberOfInstructions()
+{
+    return Memory.number_of_instructions;
+}
