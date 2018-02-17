@@ -19,7 +19,7 @@
 #define BRG 15 // branch on greater than 0
 #define BRL 16 // branch on less than 0
 
-#define unknown_address 128
+#define unknown_address 63
 
 #define MEM_FULL 1
 #define INSTRUCTION_ADDED 2
