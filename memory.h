@@ -13,10 +13,13 @@
 // Addresses: 4 bytes
 // Immediates: 4 bytes
 
-struct MemoryType
+struct ByteMemoryType
 {
     uint8_t mem[MEMORY_SIZE_BYTES]; 
 };
+
+// If all present, will be in order: OP, destR, sourceR, Im/Address
+// If not applicable, remove and move the others together
 
 
 void storeOperation(int address, int operation_code);

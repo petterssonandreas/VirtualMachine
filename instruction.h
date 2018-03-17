@@ -2,22 +2,27 @@
 #define INSTRUCTION_H
 
 #define NOP 0
-#define PUS 1
-#define POP 2
+
 #define ADD 3
-#define BEQ 4
-#define BRA 5
-#define PRINT_IM 6
-#define DUP 7
+#define SUB 11
+
 #define LOAD_IM 8
 #define MOVE_REGS 9
+
 #define PRINT_REG 10
-#define SUB 11
+#define PRINT_IM 6
+
+#define BRA 5
+#define BEQ 4
 #define BNE 12
 #define BGE 13 // branch on greater or equal 0
 #define BLE 14 // branch on less or equal 0
 #define BRG 15 // branch on greater than 0
 #define BRL 16 // branch on less than 0
+
+#define PUS 1
+#define POP 2
+#define DUP 7
 
 #define unknown_address 63
 
@@ -34,17 +39,20 @@ struct InstructionType
     int source_reg_number;
 };
 
+// *** Not used anymore ***
 struct MemoryType
 {
     struct InstructionType memory[MAX_NUM_INSTRUCTIONS];
     int number_of_instructions;
 };
 
-
+// *** Not used anymore ***
 void initMemory();
-
+// *** Not used anymore ***
 int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number);
+// *** Not used anymore ***
 struct InstructionType getInstruction(int address);
+// *** Not used anymore ***
 int getNumberOfInstructions();
 
 #endif

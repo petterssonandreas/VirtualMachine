@@ -1,14 +1,15 @@
 #include "instruction.h"
 
+// *** Not used anymore ***
 static struct MemoryType Memory;
 
-
+// *** Not used anymore ***
 void initMemory()
 {
     Memory.number_of_instructions = 0;
 }
 
-
+// *** Not used anymore ***
 int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number)
 {
     if(Memory.number_of_instructions >= MAX_NUM_INSTRUCTIONS)
@@ -29,6 +30,7 @@ int addInstruction(int operation, int data, int destination_reg_number, int sour
     }
 }
 
+// *** Not used anymore ***
 struct InstructionType getInstruction(int address)
 {
     if(address < MAX_NUM_INSTRUCTIONS)
@@ -43,7 +45,7 @@ struct InstructionType getInstruction(int address)
     }
 }
 
-
+// *** Not used anymore ***
 int getNumberOfInstructions()
 {
     return Memory.number_of_instructions;

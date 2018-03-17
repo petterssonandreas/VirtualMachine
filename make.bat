@@ -1,1 +1,1 @@
-cl /W3 main.c instruction.c stack.c register.c
+cl /W3 main.c instruction.c register.c memory.c
