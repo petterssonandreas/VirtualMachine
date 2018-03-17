@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "memory.h"
 
 static struct ByteMemoryType Memory;
@@ -57,4 +58,17 @@ int getImmediate(int address)
     // 4 bytes long
     int* immediate_p = (int*) &Memory.mem[address];
     return *immediate_p;
+}
+
+
+
+void printMemory()
+{
+    printf("\n\n MEMORY CONTENTS \n\n");
+
+    for(int i = 0; i < MEMORY_SIZE_BYTES; ++i)
+    {
+        printf("%d:  %d\n", i, Memory.mem[i]);
+    }
+    printf("\n");
 }

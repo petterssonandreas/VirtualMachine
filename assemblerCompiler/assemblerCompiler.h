@@ -3,7 +3,7 @@
 
 #define MAX_INSTRUCTION_LENGTH 10
 #define NUM_DIFFERENT_OPERATIONS 17
-#define MAX_REG_NAME_LENGTH 10
+#define MAX_ARGUMENTS_LENGTH 100
 
 struct OperationStringCodeType
 {

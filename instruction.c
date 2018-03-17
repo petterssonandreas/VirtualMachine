@@ -1,16 +1,15 @@
 #include "instruction.h"
 
-// *** Not used anymore ***
+// *** All functions only used in assemblerCompiler ***
 static struct MemoryType Memory;
 
-// *** Not used anymore ***
 void initMemory()
 {
     Memory.number_of_instructions = 0;
 }
 
-// *** Not used anymore ***
-int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number)
+int addInstruction(int operation, int data, int destination_reg_number, 
+    int source_reg_number, int store_size_bytes)
 {
     if(Memory.number_of_instructions >= MAX_NUM_INSTRUCTIONS)
     {
@@ -24,13 +23,13 @@ int addInstruction(int operation, int data, int destination_reg_number, int sour
         instr_p->data = data;
         instr_p->destination_reg_number = destination_reg_number;
         instr_p->source_reg_number = source_reg_number;
+        instr_p->store_size_bytes = store_size_bytes;
 
         Memory.number_of_instructions++;
         return INSTRUCTION_ADDED;
     }
 }
 
-// *** Not used anymore ***
 struct InstructionType getInstruction(int address)
 {
     if(address < MAX_NUM_INSTRUCTIONS)
@@ -45,7 +44,6 @@ struct InstructionType getInstruction(int address)
     }
 }
 
-// *** Not used anymore ***
 int getNumberOfInstructions()
 {
     return Memory.number_of_instructions;

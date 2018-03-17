@@ -37,22 +37,21 @@ struct InstructionType
     int data;
     int destination_reg_number;
     int source_reg_number;
+    int store_size_bytes;
 };
 
-// *** Not used anymore ***
+
+// *** All functions only used in assemblerCompiler ***
 struct MemoryType
 {
     struct InstructionType memory[MAX_NUM_INSTRUCTIONS];
     int number_of_instructions;
 };
 
-// *** Not used anymore ***
 void initMemory();
-// *** Not used anymore ***
-int addInstruction(int operation, int data, int destination_reg_number, int source_reg_number);
-// *** Not used anymore ***
+int addInstruction(int operation, int data, int destination_reg_number,
+    int source_reg_number, int store_size_bytes);
 struct InstructionType getInstruction(int address);
-// *** Not used anymore ***
 int getNumberOfInstructions();
 
 #endif

@@ -10,6 +10,7 @@ void initOperationStringCodes();
 unsigned int getOperationCode(char* op_str);
 void clearLine(FILE* file);
 void writeCode(char* filename);
+int calculateByteAddress(int instruction_number);
 
 
 int main(int argc, char *argv[])
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
     if(argc >= 2)
     {
         compileCode(argv[1]);
-        writeCode("a.out");
+        writeCode("..\\a.out");
     }
 }
 
@@ -43,8 +44,10 @@ void writeCode(char* filename)
     for(i = 0; i < getNumberOfInstructions(); ++i)
     {
         struct InstructionType instruction = getInstruction(i);
-        fprintf(file, "%d,%d,%d,%d;", instruction.operation, instruction.data, 
-                instruction.destination_reg_number, instruction.source_reg_number);
+        fprintf(file, "%d,%d,%d,%d;", instruction.operation, 
+                instruction.destination_reg_number, 
+                instruction.source_reg_number,
+                instruction.data);
     }
 
     fclose(file);
@@ -67,8 +70,9 @@ void compileCode(char* source_file)
     int data = 0;
     int destination_reg_number = 0;
     int source_reg_number = 0;
+    int store_size_bytes;
 
-    char reg_names[MAX_REG_NAME_LENGTH];
+    char register_and_data_string[MAX_ARGUMENTS_LENGTH];
 
     while(!feof(file))
     {
@@ -86,6 +90,7 @@ void compileCode(char* source_file)
         switch(op_code)
         {
             case NOP:
+                store_size_bytes = 1;
                 clearLine(file);
                 break;
             
@@ -98,58 +103,86 @@ void compileCode(char* source_file)
                 break;
 
             case ADD:
-                fscanf(file, "%s", &reg_names);
-                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d", &destination_reg_number, &source_reg_number);
                 printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                store_size_bytes = 3;
                 clearLine(file);
                 break;
 
             case SUB:
-                fscanf(file, "%s", &reg_names);
-                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d", &destination_reg_number, &source_reg_number);
                 printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                store_size_bytes = 3;
                 clearLine(file);
                 break;
 
             case BRA:
                 fscanf(file, "%d", &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 5;
                 clearLine(file);
                 break;
 
             case BEQ:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
             case BNE:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
             case BGE:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
             case BLE:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
             case BRG:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
             case BRL:
-                fscanf(file, "%d", &data);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d,%d", 
+                       &destination_reg_number, &source_reg_number, &data);
+                data = calculateByteAddress(data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 7;
                 clearLine(file);
                 break;
 
@@ -160,39 +193,45 @@ void compileCode(char* source_file)
             case PRINT_IM:
                 fscanf(file, "%d", &data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 5;
                 clearLine(file);
                 break;
 
             case PRINT_REG:
-                fscanf(file, "%s", &reg_names);
-                sscanf(reg_names, "R%d", &source_reg_number);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d", &source_reg_number);
                 printf("Compiling: %s R%d\n", operation, source_reg_number);
+                store_size_bytes = 2;
                 clearLine(file);
                 break;
 
             case LOAD_IM:
                 fscanf(file, "%d", &data);
                 printf("Compiling: %s %d\n", operation, data);
+                store_size_bytes = 6;
                 clearLine(file);
                 break;
 
             case MOVE_REGS:
-                fscanf(file, "%s", &reg_names);
-                sscanf(reg_names, "R%d,R%d", &destination_reg_number, &source_reg_number);
+                fscanf(file, "%s", &register_and_data_string);
+                sscanf(register_and_data_string, "R%d,R%d", &destination_reg_number, &source_reg_number);
                 printf("Compiling: %s R%d,R%d\n", operation, destination_reg_number, source_reg_number);
+                store_size_bytes = 3;
                 clearLine(file);
                 break;
 
             default:
                 printf("Unknown instruction, setting to NOP\n");
                 op_code = NOP;
+                store_size_bytes = 1;
                 clearLine(file);
                 break;
             
         }
 
         // Gotten all data, add instruction
-        addInstruction(op_code, data, destination_reg_number, source_reg_number);
+        addInstruction(op_code, data, destination_reg_number, source_reg_number, 
+                       store_size_bytes);
     }
 
     fclose(file);
@@ -206,6 +245,21 @@ void clearLine(FILE* file)
     {
         c = getc(file);
     } while(c != '\n' && c != EOF);
+}
+
+int calculateByteAddress(int instruction_number)
+{
+    int byte_number = 0;
+
+    struct InstructionType instr;
+
+    for(int i = 0; i < instruction_number; ++i)
+    {
+        instr = getInstruction(i);
+        byte_number += instr.store_size_bytes;
+    }
+
+    return byte_number;
 }
 
 

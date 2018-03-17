@@ -79,6 +79,8 @@ int addByteInstruction(int instructionAddress, int op_code, int immediate,
             ++instructionAddress;
             storeRegisterNumber(instructionAddress, source_reg_num);
             ++instructionAddress;
+            storeAddress(instructionAddress, immediate);
+            instructionAddress += 4;
             break;
 
         default:
@@ -113,7 +115,10 @@ int readInstructions()
 
     while(!feof(fp))
     {
-        fscanf(fp, "%d,%d,%d,%d", &op_code, &data, &dest_reg_num, &source_reg_num);
+        if(fscanf(fp, "%d,%d,%d,%d", &op_code, &dest_reg_num, &source_reg_num, &data) <= 0)
+        {
+            break;
+        }
         printf("Adding instruction: op=%d, data=%d\n", op_code, data);
         instructionAddress = addByteInstruction(instructionAddress, op_code, data, dest_reg_num, source_reg_num);
 
@@ -216,7 +221,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BEQ %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BEQ R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) == 0)
                 {
                     pc = instr.data;
@@ -232,7 +237,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BNE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BNE R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) != 0)
                 {
                     pc = instr.data;
@@ -248,7 +253,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BGE R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) >= 0)
                 {
                     pc = instr.data;
@@ -264,7 +269,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BGE R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) <= 0)
                 {
                     pc = instr.data;
@@ -280,7 +285,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BGE R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) > 0)
                 {
                     pc = instr.data;
@@ -296,7 +301,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code BGE %d,R%d,R%d\n", instr.data, instr.destination_reg_number, instr.source_reg_number);
+                printf("Running code BGE R%d,R%d,%d\n", instr.destination_reg_number, instr.source_reg_number, instr.data);
                 if(subTwoRegs(instr.destination_reg_number, instr.source_reg_number) < 0)
                 {
                     pc = instr.data;
@@ -315,7 +320,7 @@ void runCode()
                 instr.data = getStoredAddress(pc);
                 pc += 4;
 
-                printf("Running code PRI,%d\n", instr.data);
+                printf("Running code PRI %d\n", instr.data);
                 printf("%d\n", instr.data);
                 break;
 
@@ -377,5 +382,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    printMemory();
     runCode();
 }

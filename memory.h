@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-#define MEMORY_SIZE_BYTES 1024
+#define MEMORY_SIZE_BYTES 32
 
 // Data sizes
 // 
@@ -31,5 +31,7 @@ int getOperation(int address);
 int getRegisterNumber(int address);
 int getStoredAddress(int address);
 int getImmediate(int address);
+
+void printMemory();
 
 #endif
