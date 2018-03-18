@@ -24,7 +24,7 @@
 #define POP 2
 #define DUP 7
 
-#define unknown_address 63
+#define UNKNOWN_INSTRUCTION 63
 
 #define MEM_FULL 1
 #define INSTRUCTION_ADDED 2

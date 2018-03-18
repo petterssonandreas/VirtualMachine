@@ -39,7 +39,7 @@ struct InstructionType getInstruction(int address)
     else
     {
         struct InstructionType unknown_instr;
-        unknown_instr.operation = unknown_address;
+        unknown_instr.operation = UNKNOWN_INSTRUCTION;
         return unknown_instr;
     }
 }

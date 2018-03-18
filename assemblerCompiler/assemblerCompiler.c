@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include "assemblerCompiler.h"
 #include "../instruction.h"
 
 
 struct OperationStringCodeType OperationStringCodes[NUM_DIFFERENT_OPERATIONS];
+static struct StringKeyIntValueLookupType Labels;
 
 void compileCode(char* source_file);
 void initOperationStringCodes();
@@ -11,6 +13,7 @@ unsigned int getOperationCode(char* op_str);
 void clearLine(FILE* file);
 void writeCode(char* filename);
 int calculateByteAddress(int instruction_number);
+void addLabel(char* label_string, int byte_address);
 
 
 int main(int argc, char *argv[])
@@ -221,6 +224,18 @@ void compileCode(char* source_file)
                 break;
 
             default:
+                // Check if label, i.e. if colon at end
+                printf("%d: %c\n", strlen(operation), operation[strlen(operation)-1]);
+                if(operation[strlen(operation)-1] == ':')
+                {
+                    printf("SHOULD BE LABEL\n");
+                    char label[MAX_INSTRUCTION_LENGTH];
+                    strncpy(label, operation, strlen(operation)-1);
+                    printf("Label: %s\n", label);
+                    int byte_address = calculateByteAddress(getNumberOfInstructions());
+                    addLabel(label, byte_address);
+                }
+
                 printf("Unknown instruction, setting to NOP\n");
                 op_code = NOP;
                 store_size_bytes = 1;
@@ -263,10 +278,19 @@ int calculateByteAddress(int instruction_number)
 }
 
 
+void addLabel(char* label_string, int byte_address)
+{
+    // Assumes label not already present
+    strncpy(Labels.dictionary[Labels.number_of_entries].key, label_string, strlen(label_string));
+    Labels.dictionary[Labels.number_of_entries].value = byte_address;
+    Labels.number_of_entries++;
+}
+
+
 unsigned int getOperationCode(char* op_str)
 {
     int i;
-    int op_code = 0;
+    int op_code = UNKNOWN_INSTRUCTION;
     for(i = 0; i < NUM_DIFFERENT_OPERATIONS; ++i)
     {
         if(!strcmp(op_str, OperationStringCodes[i].operation_string))
